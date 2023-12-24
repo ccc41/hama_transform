@@ -88,58 +88,57 @@ def Signaldone():
 
             pick = self.var.get()
                      
-        if pick == 'File name':
-            spectrumName=MyDictionary[pick]()
-            spectrumDir=os.path.dirname(spectrumName)
-            os.chdir(spectrumDir)
-            DirectoryName1=os.path.basename(spectrumName)
-            DirectoryName2=os.path.splitext(spectrumName)[1]
-            LenDirectoryName2=len(DirectoryName2)
-            DirectoryName=DirectoryName1[:-LenDirectoryName2]
-                                
+            if pick == 'File name':
+                spectrumName=MyDictionary[pick]()
+                spectrumDir=os.path.dirname(spectrumName)
+                os.chdir(spectrumDir)
+                DirectoryName1=os.path.basename(spectrumName)
+                DirectoryName2=os.path.splitext(spectrumName)[1]
+                LenDirectoryName2=len(DirectoryName2)
+                DirectoryName=DirectoryName1[:-LenDirectoryName2]
+                                    
 
-            ListDir=os.listdir(os.getcwd())
-            LenListDir=len(ListDir)
+                ListDir=os.listdir(os.getcwd())
+                LenListDir=len(ListDir)
 
-            KeyDir=0
-            for i in range(LenListDir):
-                if ListDir[i] == DirectoryName:
-                    mode=os.stat(DirectoryName)[ST_MODE]
-                    if mode & S_IFDIR:
-                        KeyDir=1
-            if KeyDir == 0:
-                os.mkdir( DirectoryName)
-                                
-#                         print DirectoryName
-            spectrumDataDir=spectrumDir+os.altsep+DirectoryName
-#                         print spectrumDataDir
-                                
-#			drawPlot(spectrumName,"Initial spectrum")
-            parentWidget=root
-            Picture(spectrumName, "Initial spectrum", "k", "Chi",'SNW')
-  
-        elif pick == 'k-weight':
-            weight=MyDictionary[pick]()
-            SpectrumFunction=workingDir+os.altsep+'SpectrumFunction.txt'
-            outputFile = open (SpectrumFunction, 'w')
-            outputFile.write("%s\n" %(spectrumName))
-            outputFile.write("%x" %(weight))
-            outputFile.close()
-                     
-            os.chdir(workingDir)
-            os.system("spectrum.exe")   
-#                         print 'spectrum.exe worked'                     
-            Function=workingDir+os.altsep+'function.txt'
-            Picture(Function, "Weighted spectrum", "k", "Chi*weigth", 'FW')
+                KeyDir=0
+                for i in range(LenListDir):
+                    if ListDir[i] == DirectoryName:
+                        mode=os.stat(DirectoryName)[ST_MODE]
+                        if mode & S_IFDIR:
+                            KeyDir=1
+                if KeyDir == 0:
+                    os.mkdir( DirectoryName)
+                                    
+    #                         print DirectoryName
+                spectrumDataDir=spectrumDir+os.altsep+DirectoryName
+    #                         print spectrumDataDir
+                                    
+    #			drawPlot(spectrumName,"Initial spectrum")
+                parentWidget=root
+                Picture(spectrumName, "Initial spectrum", "k", "Chi",'SNW')
+    
+            elif pick == 'k-weight':
+                weight=MyDictionary[pick]()
+                SpectrumFunction=workingDir+os.altsep+'SpectrumFunction.txt'
+                outputFile = open (SpectrumFunction, 'w')
+                outputFile.write("%s\n" %(spectrumName))
+                outputFile.write("%x" %(weight))
+                outputFile.close()
+                        
+                os.chdir(workingDir)
+                os.system("spectrum.exe")   
+    #                         print 'spectrum.exe worked'                     
+                Function=workingDir+os.altsep+'function.txt'
+                Picture(Function, "Weighted spectrum", "k", "Chi*weigth", 'FW')
 
-        elif pick == 'Fourier':
-            os.chdir(workingDir)
-            os.system("fourier.exe")
-            Fourier=workingDir+os.altsep+'Fourier.txt'
-            Picture(Fourier, "Fourier transform of the spectrum", "r", "Fourier", 'FTW') 
+            elif pick == 'Fourier':
+                os.chdir(workingDir)
+                os.system("fourier.exe")
+                Fourier=workingDir+os.altsep+'Fourier.txt'
+                Picture(Fourier, "Fourier transform of the spectrum", "r", "Fourier", 'FTW') 
                       
                               
-     
     Signal().mainloop()
 ###################Signaldone########end##########Signaldone#####################
 ###################Modeldone#########start########Modeldone######################
@@ -262,71 +261,71 @@ def Morletdone():
             entries.append(ent)
         return entries
     
-        root2=Tk()
-        root2.title('Morlet Parameters')   
-        vars = makeform(root2, Morletparameters)
+    root2=Tk()
+    root2.title('Morlet Parameters')   
+    vars = makeform(root2, Morletparameters)
 
-        Button(root2, text='Accept',
-                         command=(lambda v=vars: fetchM(v, root2))).pack(side=LEFT)
-        root2.bind('<Return>', (lambda event, v=vars: fetchM(v,root2)))
+    Button(root2, text='Accept',
+                        command=(lambda v=vars: fetchM(v, root2))).pack(side=LEFT)
+    root2.bind('<Return>', (lambda event, v=vars: fetchM(v,root2)))
 
-        root2.mainloop()
+    root2.mainloop()
 ###################Morletdone########end########Morletdone#####################
 ###################Cauchydone#######start#######Cauchydone#####################
 def Cauchydone():
-        global Cauchyparameters
-        global FlagMWL, MWLparameter1, MWLparameter2
-        global workingDir
-        FlagMWL=2 
+    global Cauchyparameters
+    global FlagMWL, MWLparameter1, MWLparameter2
+    global workingDir
+    FlagMWL=2 
         
-        def fetchC(entries, root3):
-            global MWLparameter1, MWLparameter2
-            global workingDir
+    def fetchC(entries, root3):
+        global MWLparameter1, MWLparameter2
+        global workingDir
 
-            os.chdir(workingDir)
-            outputFile = open ('Motherparam.txt', 'w')
-            outputFile.write("%g\n" %(0))
-            outputFile.write("%g\n" %(0))
-            i=1
-            for entry in entries:
-                printValue=float(entry.get())
-                outputFile.write("%g\n" %(printValue))
-                if i ==1:
-                    MWLparameter1=printValue
-                else:
-                    MWLparameter2=printValue
-                i=i+1
+        os.chdir(workingDir)
+        outputFile = open ('Motherparam.txt', 'w')
+        outputFile.write("%g\n" %(0))
+        outputFile.write("%g\n" %(0))
+        i=1
+        for entry in entries:
+            printValue=float(entry.get())
+            outputFile.write("%g\n" %(printValue))
+            if i ==1:
+                MWLparameter1=printValue
+            else:
+                MWLparameter2=printValue
+            i=i+1
 
-            outputFile.close()
-            root3.destroy()
+        outputFile.close()
+        root3.destroy()
 
-                      
-            os.system("cauchy.exe")
-            Cauchy=workingDir+os.altsep+'mother.txt'
-            Picture(Cauchy, "Cauchy wavelet", "r", "Cauchy", 'GW')
-            return
+                    
+        os.system("cauchy.exe")
+        Cauchy=workingDir+os.altsep+'mother.txt'
+        Picture(Cauchy, "Cauchy wavelet", "r", "Cauchy", 'GW')
+        return
 
-        def makeform(root3, Cauchyparameters):
-           
-            entries = []
-            row = Frame(root3)	#make a new row
-            lab = Label(row, width=10, text=Cauchyparameters)      # add to columns
-            ent=Entry(row)
-            row.pack(side=TOP, fill=X)
-            lab.pack(side=LEFT)
-            ent.pack(side=RIGHT, expand=YES, fill=X)  
-            entries.append(ent)
-            return entries
+    def makeform(root3, Cauchyparameters):
+        
+        entries = []
+        row = Frame(root3)	#make a new row
+        lab = Label(row, width=10, text=Cauchyparameters)      # add to columns
+        ent=Entry(row)
+        row.pack(side=TOP, fill=X)
+        lab.pack(side=LEFT)
+        ent.pack(side=RIGHT, expand=YES, fill=X)  
+        entries.append(ent)
+        return entries
     
-        root3=Tk()
-        root3.title('Cauchy Parameters')   
-        vars = makeform(root3, Cauchyparameters)
+    root3=Tk()
+    root3.title('Cauchy Parameters')   
+    vars = makeform(root3, Cauchyparameters)
 
-        Button(root3, text='Accept',
-                        command=(lambda v=vars: fetchC(v, root3))).pack(side=LEFT)
-        root3.bind('<Return>', (lambda event, v=vars: fetchC(v,root3)))
+    Button(root3, text='Accept',
+                    command=(lambda v=vars: fetchC(v, root3))).pack(side=LEFT)
+    root3.bind('<Return>', (lambda event, v=vars: fetchC(v,root3)))
 
-        root3.mainloop()
+    root3.mainloop()
 ###################Cauchydone########end########Cauchydone#####################
 def notdone():  
     showerror('Not implemented', 'Not yet available')
